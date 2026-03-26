@@ -156,9 +156,42 @@ navigator.geolocation.watchPosition(pos=>{
 });
 
 // BOTÓN UBICACIÓN
-document.getElementById("ubicacionBtn").onclick=()=>{
-  if(!driverCoords) return;
-  map.flyTo({ center:driverCoords, zoom:15 });
+let marcadorUsuario;
+
+document.getElementById("ubicacionBtn").onclick = () => {
+  navigator.geolocation.getCurrentPosition(pos => {
+    const lng = pos.coords.longitude;
+    const lat = pos.coords.latitude;
+
+    // MOVER MAPA
+    map.flyTo({
+      center: [lng, lat],
+      zoom: 16,
+      speed: 1.2
+    });
+
+    // ELIMINAR marcador anterior
+    if (marcadorUsuario) marcadorUsuario.remove();
+
+    // ICONO PRO (tipo Uber)
+    const el = document.createElement("div");
+    el.style.width = "18px";
+    el.style.height = "18px";
+    el.style.background = "#00cfff";
+    el.style.borderRadius = "50%";
+    el.style.border = "3px solid white";
+    el.style.boxShadow = "0 0 15px #00cfff";
+
+    marcadorUsuario = new mapboxgl.Marker(el)
+      .setLngLat([lng, lat])
+      .addTo(map);
+
+    crearPulso(lng, lat);
+  }, () => {
+    alert("Activa la ubicación 📍");
+  }, {
+    enableHighAccuracy: true
+  });
 };
 
 // BOTÓN CONEXIÓN
