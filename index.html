@@ -136,6 +136,18 @@ const map = new mapboxgl.Map({
   zoom:12
 });
 
+function enfocarViaje(origen, destino) {
+  const bounds = new mapboxgl.LngLatBounds();
+
+  bounds.extend(origen);
+  bounds.extend(destino);
+
+  map.fitBounds(bounds, {
+    padding: 80,
+    duration: 1500
+  });
+}  
+
 let driverCoords=null;
 let conectado=false;
 let polling=null;
